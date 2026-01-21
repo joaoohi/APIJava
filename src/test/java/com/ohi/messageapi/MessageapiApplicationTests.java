@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class MessageapiApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void mainDeveSubirAplicacao() {
+        MessageapiApplication.main(new String[]{});
 	}
 
 }
