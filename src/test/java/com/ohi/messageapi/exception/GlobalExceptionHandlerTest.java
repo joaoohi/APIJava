@@ -26,20 +26,27 @@ class GlobalExceptionHandlerTest {
     @Autowired
     MockMvc mockMvc;
 
+    @MockBean
+    MessageService messageService;
+
 
     @Test
     void deveRetornar404QuandoMensagemNaoExistir() throws Exception {
 
-        when(messageService.buscarRespostaPorChave("chave-que-nao-existe"))
-                .thenThrow(new MessageNotFoundException("chave-que-nao-existe"));
+        when(messageService.buscarComFiltros(
+                "chave-que-nao-existe",
+                "WHATSAPP"
+        )).thenThrow(new MessageNotFoundException("Nenhuma mensagem encontrada"));
 
-        mockMvc.perform(get("/messages/chave-que-nao-existe"))
+        mockMvc.perform(get("/messages")
+                        .param("chave", "chave-que-nao-existe")
+                        .param("canalCategoria", "WHATSAPP"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.error").value("Not Found"))
-                .andExpect(jsonPath("$.message").value("Mensagem não encontrada"));
+                .andExpect(jsonPath("$.message")
+                        .value("Mensagem não encontrada"));
     }
-
 
     @Test
     void deveRetornar400QuandoCamposInvalidos() throws Exception {
@@ -61,11 +68,12 @@ class GlobalExceptionHandlerTest {
         String json = """
     {
       "chave": "duplicada",
-      "mensagem": "teste"
+      "mensagem": "teste",
+      "canalCategoria": "EMAIL"
     }
     """;
 
-        when(messageService.salvar(any(), any()))
+        when(messageService.salvar(any(), any(), any()))
                 .thenThrow(new ChaveDuplicadaException(
                         "Já existe uma mensagem com essa chave"
                 ));
@@ -80,16 +88,13 @@ class GlobalExceptionHandlerTest {
                         .value("Já existe uma mensagem com essa chave"));
     }
 
-
-    @MockBean
-    MessageService messageService;
     @Test
     void deveRetornar500QuandoErroInesperado() throws Exception {
 
-        when(messageService.buscarRespostaPorChave(any()))
+        when(messageService.buscarComFiltros(any(), any()))
                 .thenThrow(new RuntimeException("Erro qualquer"));
 
-        mockMvc.perform(get("/messages/qualquer"))
+        mockMvc.perform(get("/messages"))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.status").value(500))
                 .andExpect(jsonPath("$.error").value("Internal Server Error"))

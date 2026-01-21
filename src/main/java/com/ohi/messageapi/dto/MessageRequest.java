@@ -10,4 +10,8 @@ public class MessageRequest {
     @NotBlank(message = "A mensagem não pode ser vazia")
     public String mensagem;
 
+    @NotBlank(message = "canalCategoria não pode ser vazio")
+    public String canalCategoria;
+
+
 }

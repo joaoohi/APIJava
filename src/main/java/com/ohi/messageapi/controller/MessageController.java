@@ -9,6 +9,9 @@ import com.ohi.messageapi.dto.MessageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.util.List;
+import com.ohi.messageapi.dto.MessageSearchRequest;
+
 @RestController
 @RequestMapping("/messages")
 public class MessageController {
@@ -22,11 +25,30 @@ public class MessageController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Message salvar(@RequestBody @Valid MessageRequest request) {
-        return service.salvar(request.chave, request.mensagem);
+        return service.salvar(
+                request.chave,
+                request.mensagem,
+                request.canalCategoria
+        );
     }
 
-    @GetMapping("/{chave}")
-    public MessageResponse buscar(@PathVariable String chave) {
-        return service.buscarRespostaPorChave(chave);
+    @GetMapping
+    public List<MessageResponse> buscarComFiltros(
+            @RequestParam(required = false) String chave,
+            @RequestParam(required = false) String canalCategoria
+    ) {
+        return service.buscarComFiltros(chave, canalCategoria);
     }
+
+
+    @PostMapping("/buscar")
+    public List<MessageResponse> buscar(
+            @RequestBody MessageSearchRequest request
+    ) {
+        return service.buscarComFiltros(
+                request.chave,
+                request.canalCategoria
+        );
+    }
+
 }

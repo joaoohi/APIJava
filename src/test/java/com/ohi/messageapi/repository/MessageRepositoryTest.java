@@ -17,7 +17,8 @@ class MessageRepositoryTest{
     void deveSalvarEMostrarMensagem(){
         Message message = new Message(
                 "chave-teste",
-                "mensagem de teste"
+                "mensagem de teste",
+                "whatsapp"
         );
 
 
