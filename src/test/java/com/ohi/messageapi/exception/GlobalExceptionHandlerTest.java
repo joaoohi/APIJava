@@ -73,7 +73,7 @@ class GlobalExceptionHandlerTest {
     }
     """;
 
-        when(messageService.salvar(any(), any(), any()))
+        when(messageService.salvar(any(), any(), any(), any()))
                 .thenThrow(new ChaveDuplicadaException(
                         "Já existe uma mensagem com essa chave"
                 ));

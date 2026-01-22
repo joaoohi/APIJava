@@ -20,6 +20,8 @@ public class Message {
     @Column(name = "canal_categoria", nullable = false)
     private String canalCategoria;
 
+    @Column(nullable = false, length = 1)
+    String status;
 
     @Column(name = "data_criacao", nullable = false)
     private LocalDateTime dataCriacao;
@@ -33,6 +35,7 @@ public class Message {
         this.chaveMensagem = chaveMensagem;
         this.mensagem = mensagem;
         this.canalCategoria = canalCategoria;
+        this.status = "a";
         this.dataCriacao = LocalDateTime.now();
         this.dataAlteracao = this.dataCriacao;
     }
@@ -52,6 +55,8 @@ public class Message {
 
     public String getCanalCategoria() {return canalCategoria;}
 
+    public String getStatus() {return status;}
+
     public LocalDateTime getDataCriacao() {
         return dataCriacao;
     }
@@ -66,5 +71,9 @@ public class Message {
 
     public void setMensagem(String mensagem) {
         this.mensagem = mensagem;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

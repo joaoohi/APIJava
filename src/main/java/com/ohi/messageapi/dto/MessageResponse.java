@@ -8,6 +8,7 @@ public class MessageResponse {
     public String chave;
     public String mensagem;
     public String canalCategoria;
+    public String status;
     public LocalDateTime dataCriacao;
     public LocalDateTime dataAlteracao;
 }

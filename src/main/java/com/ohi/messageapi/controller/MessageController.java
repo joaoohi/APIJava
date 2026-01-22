@@ -28,7 +28,8 @@ public class MessageController {
         return service.salvar(
                 request.chave,
                 request.mensagem,
-                request.canalCategoria
+                request.canalCategoria,
+                request.status
         );
     }
 
@@ -50,5 +51,11 @@ public class MessageController {
                 request.canalCategoria
         );
     }
+
+    @DeleteMapping("/{chave}")
+    public Message inativar(@PathVariable String chave) {
+        return service.inativar(chave);
+    }
+
 
 }
