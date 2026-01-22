@@ -1,16 +1,15 @@
 package com.ohi.messageapi.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 
 @SpringBootTest
@@ -19,9 +18,6 @@ class MessageControllerTest {
 
     @Autowired
     MockMvc mockMvc;
-
-    @Autowired
-    ObjectMapper objectMapper;
 
     @Test
     void deveSalvarMensagemComSucesso() throws Exception {
@@ -271,6 +267,36 @@ class MessageControllerTest {
                         .value("mensagem atualizada"));
     }
 
+    @Test
+    void deveInativarMensagemComSucesso() throws Exception {
+
+        String json = """
+    {
+      "chave": "teste-1",
+      "mensagem": "mensagem teste",
+      "canalCategoria": "WHATSAPP"
+    }
+    """;
+
+        mockMvc.perform(post("/messages")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(delete("/messages/teste-1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.chaveMensagem").value("teste-1"))
+                .andExpect(jsonPath("$.status").value("i"));
+    }
 
 
+    @Test
+    void deveRetornar404AoInativarMensagemInexistente() throws Exception {
+
+        mockMvc.perform(delete("/messages/chave-nao-existe"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.error").value("Not Found"))
+                .andExpect(jsonPath("$.message").value("Mensagem não encontrada"));
+    }
 }

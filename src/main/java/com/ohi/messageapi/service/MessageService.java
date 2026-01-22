@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.ohi.messageapi.exception.MessageNotFoundException;
 import com.ohi.messageapi.dto.MessageResponse;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -15,7 +16,12 @@ public class MessageService {
     @Autowired
     MessageRepository repository;
 
-    public Message salvar(String chave, String mensagem, String canalCategoria) {
+    public Message salvar(
+            String chave,
+            String mensagem,
+            String canalCategoria,
+            String status
+    ) {
 
         var existente = repository
                 .findByChaveMensagemIgnoreCaseAndCanalCategoriaIgnoreCase(
@@ -26,9 +32,20 @@ public class MessageService {
         if (existente.isPresent()) {
             Message message = existente.get();
 
+            boolean alterou = false;
+
             if (!message.getMensagem().equals(mensagem)) {
                 message.setMensagem(mensagem);
-                message.setDataAlteracao(java.time.LocalDateTime.now());
+                alterou = true;
+            }
+
+            if (status != null && !status.equals(message.getStatus())) {
+                message.setStatus(status);
+                alterou = true;
+            }
+
+            if (alterou) {
+                message.setDataAlteracao(LocalDateTime.now());
                 return repository.save(message);
             }
 
@@ -36,9 +53,13 @@ public class MessageService {
         }
 
         Message nova = new Message(chave, mensagem, canalCategoria);
+
+        if (status != null) {
+            nova.setStatus(status);
+        }
+
         return repository.save(nova);
     }
-
 
     public List<MessageResponse> buscarComFiltros(
             String chave,
@@ -79,11 +100,23 @@ public class MessageService {
             response.id = message.getId();
             response.chave = message.getChaveMensagem();
             response.mensagem = message.getMensagem();
-            response.canalCategoria= message.getCanalCategoria();
+            response.canalCategoria = message.getCanalCategoria();
             response.dataCriacao = message.getDataCriacao();
             response.dataAlteracao = message.getDataAlteracao();
+            response.status = message.getStatus();
             return response;
         }).toList();
+    }
+
+    public Message inativar(String chave) {
+
+        Message message = repository.findByChaveMensagemIgnoreCase(chave)
+                .orElseThrow(() -> new MessageNotFoundException("Mensagem não encontrada"));
+
+        message.setStatus("i");
+        message.setDataAlteracao(java.time.LocalDateTime.now());
+
+        return repository.save(message);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.ohi.messageapi.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 public class MessageRequest {
 
@@ -13,5 +14,10 @@ public class MessageRequest {
     @NotBlank(message = "canalCategoria não pode ser vazio")
     public String canalCategoria;
 
+    @Pattern(
+            regexp = "a|i",
+            message = "Status deve ser 'a' (ativo) ou 'i' (inativo)"
+    )
+    public String status;
 
 }

@@ -24,4 +24,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             String canalCategoria
     );
 
+    Optional<Message> findByChaveMensagemIgnoreCase(String chaveMensagem);
+
+
 }
