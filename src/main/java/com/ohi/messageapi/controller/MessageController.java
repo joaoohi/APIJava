@@ -8,12 +8,13 @@ import jakarta.validation.Valid;
 import com.ohi.messageapi.dto.MessageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
 import java.util.List;
 import com.ohi.messageapi.dto.MessageSearchRequest;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
 @RequestMapping("/messages")
+@CrossOrigin(origins = "http://localhost:4200")
 public class MessageController {
 
     private final MessageService service;
