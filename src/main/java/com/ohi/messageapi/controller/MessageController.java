@@ -42,7 +42,6 @@ public class MessageController {
         return service.buscarComFiltros(chave, canalCategoria);
     }
 
-
     @PostMapping("/buscar")
     public List<MessageResponse> buscar(
             @RequestBody MessageSearchRequest request

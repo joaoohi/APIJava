@@ -86,13 +86,7 @@ public class MessageService {
             mensagens = repository
                     .findByCanalCategoriaContainingIgnoreCase(canalCategoria);
         } else {
-            throw new IllegalArgumentException(
-                    "Informe pelo menos um filtro: chave ou canalCategoria"
-            );
-        }
-
-        if (mensagens.isEmpty()) {
-            throw new MessageNotFoundException("Nenhuma mensagem encontrada");
+            mensagens = repository.findAll();
         }
 
         return mensagens.stream().map(message -> {
