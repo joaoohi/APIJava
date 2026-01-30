@@ -119,4 +119,24 @@ public class MessageService {
         return repository.save(message);
     }
 
+    public Message atualizar(
+            String chave,
+            String mensagem,
+            String canalCategoria,
+            String status
+    ) {
+        Message message = repository.findByChaveMensagemIgnoreCase(chave)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Mensagem não encontrada para a chave: " + chave)
+                );
+
+        message.setMensagem(mensagem);
+        message.setCanalCategoria(canalCategoria);
+        message.setStatus(status);
+        message.setDataAlteracao(LocalDateTime.now());
+
+        return repository.save(message);
+    }
+
+
 }

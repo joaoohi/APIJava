@@ -58,5 +58,17 @@ public class MessageController {
         return service.inativar(chave);
     }
 
+    @PutMapping("/{chave}")
+    public Message atualizar(
+            @PathVariable String chave,
+            @RequestBody @Valid MessageRequest request
+    ) {
+        return service.atualizar(
+                chave,
+                request.mensagem,
+                request.canalCategoria,
+                request.status
+        );
+    }
 
 }

@@ -76,4 +76,8 @@ public class Message {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public void setCanalCategoria(String canalCategoria) {
+        this.canalCategoria = canalCategoria;
+    }
 }
