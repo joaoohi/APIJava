@@ -63,31 +63,15 @@ public class MessageService {
 
     public List<MessageResponse> buscarComFiltros(
             String chave,
-            String canalCategoria
+            String canalCategoria,
+            String status
     ) {
 
-        boolean temChave = chave != null && !chave.isBlank();
-        boolean temCategoria = canalCategoria != null && !canalCategoria.isBlank();
-
-        List<Message> mensagens;
-
-        if (temChave && temCategoria) {
-            mensagens = repository
-                    .findByChaveMensagemContainingIgnoreCaseAndCanalCategoria(
-                            chave,
-                            canalCategoria
-                    );
-
-        } else if (temChave) {
-            mensagens = repository
-                    .findByChaveMensagemContainingIgnoreCase(chave);
-
-        } else if (temCategoria) {
-            mensagens = repository
-                    .findByCanalCategoriaContainingIgnoreCase(canalCategoria);
-        } else {
-            mensagens = repository.findAll();
-        }
+        List<Message> mensagens = repository.buscarComFiltros(
+                (chave == null || chave.isBlank()) ? null : chave,
+                (canalCategoria == null || canalCategoria.isBlank()) ? null : canalCategoria,
+                (status == null || status.isBlank()) ? null : status
+        );
 
         return mensagens.stream().map(message -> {
             MessageResponse response = new MessageResponse();
@@ -131,6 +115,4 @@ public class MessageService {
 
         return repository.save(message);
     }
-
-
 }

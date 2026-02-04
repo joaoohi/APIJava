@@ -37,9 +37,10 @@ public class MessageController {
     @GetMapping
     public List<MessageResponse> buscarComFiltros(
             @RequestParam(required = false) String chave,
-            @RequestParam(required = false) String canalCategoria
+            @RequestParam(required = false) String canalCategoria,
+            @RequestParam(required = false) String status
     ) {
-        return service.buscarComFiltros(chave, canalCategoria);
+        return service.buscarComFiltros(chave, canalCategoria, status);
     }
 
     @PostMapping("/buscar")
@@ -48,7 +49,8 @@ public class MessageController {
     ) {
         return service.buscarComFiltros(
                 request.chave,
-                request.canalCategoria
+                request.canalCategoria,
+                request.status
         );
     }
 
