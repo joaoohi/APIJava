@@ -63,37 +63,15 @@ public class MessageService {
 
     public List<MessageResponse> buscarComFiltros(
             String chave,
-            String canalCategoria
+            String canalCategoria,
+            String status
     ) {
 
-        boolean temChave = chave != null && !chave.isBlank();
-        boolean temCategoria = canalCategoria != null && !canalCategoria.isBlank();
-
-        List<Message> mensagens;
-
-        if (temChave && temCategoria) {
-            mensagens = repository
-                    .findByChaveMensagemContainingIgnoreCaseAndCanalCategoria(
-                            chave,
-                            canalCategoria
-                    );
-
-        } else if (temChave) {
-            mensagens = repository
-                    .findByChaveMensagemContainingIgnoreCase(chave);
-
-        } else if (temCategoria) {
-            mensagens = repository
-                    .findByCanalCategoriaContainingIgnoreCase(canalCategoria);
-        } else {
-            throw new IllegalArgumentException(
-                    "Informe pelo menos um filtro: chave ou canalCategoria"
-            );
-        }
-
-        if (mensagens.isEmpty()) {
-            throw new MessageNotFoundException("Nenhuma mensagem encontrada");
-        }
+        List<Message> mensagens = repository.buscarComFiltros(
+                (chave == null || chave.isBlank()) ? null : chave,
+                (canalCategoria == null || canalCategoria.isBlank()) ? null : canalCategoria,
+                (status == null || status.isBlank()) ? null : status
+        );
 
         return mensagens.stream().map(message -> {
             MessageResponse response = new MessageResponse();
@@ -119,4 +97,22 @@ public class MessageService {
         return repository.save(message);
     }
 
+    public Message atualizar(
+            String chave,
+            String mensagem,
+            String canalCategoria,
+            String status
+    ) {
+        Message message = repository.findByChaveMensagemIgnoreCase(chave)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Mensagem não encontrada para a chave: " + chave)
+                );
+
+        message.setMensagem(mensagem);
+        message.setCanalCategoria(canalCategoria);
+        message.setStatus(status);
+        message.setDataAlteracao(LocalDateTime.now());
+
+        return repository.save(message);
+    }
 }
